@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffe8ef">
+<title>Aaqila's Birthday Surprise 💗</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;font-family:Arial,Helvetica,sans-serif;background:#ffe8ef}
+body{overflow:hidden}
+#deck{height:100svh;width:100%;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#ffe8ef}
+.slide.active{display:flex}
+.artboard{position:relative;width:min(100vw,181.67svh);aspect-ratio:1352/762;max-height:100svh;flex:none;line-height:0}
+.artboard>img{display:block;width:100%;height:100%;object-fit:fill}
+.hotspot{position:absolute;display:block;border:0;border-radius:22px;background:transparent;cursor:pointer;padding:0;line-height:normal}
+.hotspot:focus-visible{outline:4px dashed #8c2851;outline-offset:3px}
+#videoSlide{background:#ffe8ef}
+.video-frame{position:absolute;display:block;object-fit:cover;background:#21131a;width:100%;height:100%;border:0;border-radius:0}
+.video-one{left:4.75%;top:34.1%;width:26.2%;height:45.4%}
+.video-two{left:37.2%;top:25.4%;width:24.1%;height:43.7%}
+.video-three{left:67.4%;top:36.6%;width:28.2%;height:47.2%}
+.controls{position:fixed;z-index:30;left:0;right:0;bottom:12px;display:flex;justify-content:center;align-items:center;gap:10px;pointer-events:none}
+.controls>*{pointer-events:auto}
+.navbtn{border:0;border-radius:999px;padding:10px 18px;background:#e93649;color:white;font-weight:800;font-size:14px;box-shadow:0 3px 12px #612b4540;cursor:pointer}
+.navbtn:hover{background:#b91f3a}
+.navbtn:disabled{opacity:.45;cursor:not-allowed}
+.counter{background:#ffffffdf;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;color:#762343}
+@media(max-width:600px){.controls{bottom:7px;gap:6px}.navbtn{padding:9px 12px;font-size:12px}.counter{font-size:11px;padding:7px 9px}}
+</style>
+</head>
+<body>
+<main id="deck" aria-label="Aaqila birthday surprise">
+  <section class="slide active" data-name="Cover">
+    <div class="artboard">
+      <img src="assets/page1.png" alt="Happy Birthday cover">
+      <button class="hotspot" style="left:32%;top:73%;width:32%;height:23%" onclick="show(1)" aria-label="Click here to begin"></button>
+    </div>
+  </section>
+  <section class="slide" data-name="Surprise">
+    <div class="artboard">
+      <img src="assets/page2.png" alt="Hey beautiful, open surprise">
+      <button class="hotspot" style="left:29%;top:77%;width:42%;height:19%" onclick="show(2)" aria-label="Open surprise"></button>
+    </div>
+  </section>
+  <section class="slide" data-name="Menu">
+    <div class="artboard">
+      <img src="assets/page3.png" alt="Birthday menu with three choices">
+      <button class="hotspot" style="left:2.5%;top:32%;width:49%;height:18%" onclick="show(3)" aria-label="Birthday wishes"></button>
+      <button class="hotspot" style="left:49%;top:52%;width:49%;height:18%" onclick="show(4)" aria-label="Funny and memories"></button>
+      <button class="hotspot" style="left:1%;top:79%;width:49%;height:17%" onclick="show(7)" aria-label="Videos"></button>
+    </div>
+  </section>
+  <section class="slide" data-name="Birthday Wishes">
+    <div class="artboard"><img src="assets/page4.png" alt="Birthday wishes for Aaqila"></div>
+  </section>
+  <section class="slide" data-name="Funny & Memories 1">
+    <div class="artboard"><img src="assets/page5.png" alt="Funny memories page one"></div>
+  </section>
+  <section class="slide" data-name="Funny & Memories 2">
+    <div class="artboard"><img src="assets/page6.png" alt="Funny memories page two"></div>
+  </section>
+  <section class="slide" data-name="Memories">
+    <div class="artboard"><img src="assets/page7.png" alt="Memories page three"></div>
+  </section>
+  <section class="slide" id="videoSlide" data-name="Videos">
+    <div class="artboard">
+      <img src="assets/video-page-background.png" alt="Pink scrapbook video page">
+      <video class="video-frame video-one" src="assets/video-1.mp4" controls playsinline preload="metadata"></video>
+      <video class="video-frame video-two" src="assets/video-2.mp4" controls playsinline preload="metadata"></video>
+      <video class="video-frame video-three" src="assets/video-3.mp4" controls playsinline preload="metadata"></video>
+    </div>
+  </section>
+</main>
+<div class="controls" id="controls">
+  <button class="navbtn" id="backBtn" type="button">← Back</button>
+  <span class="counter" id="counter">Page 1 / 8</span>
+  <button class="navbtn" id="nextBtn" type="button">Next →</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let current=0;
+const back=document.getElementById('backBtn');
+const next=document.getElementById('nextBtn');
+const counter=document.getElementById('counter');
+
+function pauseOtherVideos(){
+  document.querySelectorAll('video').forEach(v=>{if(!v.paused)v.pause();});
+}
+
+function show(index){
+  current=Math.max(0,Math.min(slides.length-1,index));
+  pauseOtherVideos();
+  slides.forEach((slide,i)=>slide.classList.toggle('active',i===current));
+
+  // Pages 1-3: clickable options only
+  // Page 4: Back to Page 3
+  // Page 5: Next to Page 6
+  // Page 6: Next to Page 7
+  // Page 7: Back to Page 3
+  // Page 8: video page, no navigation buttons
+  back.hidden = ![3,6].includes(current);
+  next.hidden = ![4,5].includes(current);
+
+  counter.textContent=`Page ${current+1} / ${slides.length}`;
+}
+
+back.addEventListener('click',()=>{
+  if(current===3 || current===6) show(2);
+});
+next.addEventListener('click',()=>{
+  if(current===4 || current===5) show(current+1);
+});
+
+show(0);
+</script>
+</body>
+</html>
